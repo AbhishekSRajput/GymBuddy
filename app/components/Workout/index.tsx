@@ -26,6 +26,7 @@ const Work = () => {
 
 	const getWorkoutPlan = async (workoutInstructions: string) => {
 		try {
+			console.log("1");
 			setLoading(!loading);
 			const response = await fetch("/api/openai", {
 				method: "POST",
@@ -36,6 +37,7 @@ const Work = () => {
 					workOutPlan: workoutInstructions,
 				}),
 			});
+			console.log("2");
 			console.log("response", response);
 			const data = await response.json();
 			setMarkDown(data);
@@ -47,7 +49,7 @@ const Work = () => {
 			// console.log(error);
 		}
 	};
-	console.log("markDown", markDown);
+	console.log("client markDown", markDown);
 
 	return (
 		<div id='about-section'>
