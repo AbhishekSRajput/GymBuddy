@@ -36,11 +36,13 @@ const Work = () => {
 					workOutPlan: workoutInstructions,
 				}),
 			});
+			console.log("response", response);
 			const data = await response.json();
 			setMarkDown(data);
 			setLoading(false);
 		} catch (error) {
 			setLoading(false);
+			console.log("client Error");
 			console.log(error);
 		}
 	};

@@ -11,12 +11,11 @@ export async function GET(req) {
 	);
 }
 
-export async function POST(req) {
+export async function POST(req, res) {
 	try {
 		const apiKey = process.env.OPENAI_API_KEY;
 		const openai = new OpenAI({ apiKey });
 		const { workOutPlan } = await req.json();
-		console.log("body.................///////////////////", workOutPlan);
 		const chatCompletion = await openai.chat.completions.create({
 			messages: [
 				{
@@ -26,12 +25,11 @@ export async function POST(req) {
 			],
 			model: "gpt-3.5-turbo",
 		});
-		console.log("chatCompletion.choices", chatCompletion.choices[0].message.content);
 		return NextResponse.json(chatCompletion.choices[0].message.content, {
 			status: 200,
 		});
 	} catch (error) {
-		console.log('error', error)
+		console.log("error", error);
 		return NextResponse.json(
 			{ error: "Failed to get data" },
 			{
