@@ -43,7 +43,8 @@ const Work = () => {
 		} catch (error) {
 			setLoading(false);
 			console.log("client Error");
-			console.log(error);
+			// throw new error
+			// console.log(error);
 		}
 	};
 	console.log("markDown", markDown);
