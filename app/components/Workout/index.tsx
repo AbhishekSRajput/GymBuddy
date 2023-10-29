@@ -4,12 +4,13 @@ import { Fade } from "react-awesome-reveal";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Loader from "../Loader";
+import OpenAI from "openai";
 
 const Work = () => {
 	const [goal, setGoal] = useState("Pounds Lost Goal");
 	const [medicalCondition, setMedicalCondition] = useState("no");
 	const [additionalInput, setAdditionalInput] = useState("");
-	const [markDown, setMarkDown] = useState("");
+	const [markDown, setMarkDown] = useState<string | null>("");
 	const [loading, setLoading] = useState(false);
 
 	const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -26,30 +27,28 @@ const Work = () => {
 
 	const getWorkoutPlan = async (workoutInstructions: string) => {
 		try {
-			console.log("1");
-			setLoading(!loading);
-			const response = await fetch("/api/openai", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					workOutPlan: workoutInstructions,
-				}),
+			setLoading(true);
+			const apiKey = process.env.OPENAI_API_KEY;
+			const openai = new OpenAI({
+				apiKey,
+				dangerouslyAllowBrowser: true,
 			});
-			console.log("2");
-			console.log("response", response);
-			const data = await response.json();
-			setMarkDown(data);
+			const chatCompletion = await openai.chat.completions.create({
+				messages: [
+					{
+						role: "user",
+						content: workoutInstructions,
+					},
+				],
+				model: "gpt-3.5-turbo",
+			});
+			setMarkDown(chatCompletion.choices[0].message.content);
 			setLoading(false);
 		} catch (error) {
 			setLoading(false);
-			console.log("client Error");
-			// throw new error
-			// console.log(error);
+			console.log("error", error);
 		}
 	};
-	console.log("client markDown", markDown);
 
 	return (
 		<div id='about-section'>
