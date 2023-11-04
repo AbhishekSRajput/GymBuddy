@@ -1,20 +1,24 @@
 "use client";
-import { ChangeEvent, ChangeEventHandler, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { Fade } from "react-awesome-reveal";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Loader from "../Loader";
 import OpenAI from "openai";
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from "@/app/store";
+import { setMarkDownData, setLoading } from '../../store/markdownTextSlice';
 
-const Work = () => {
+
+const WorkOut = () => {
+	const { markdownText, loading } = useSelector((state: RootState) => state.markdownText);
+  const dispatch = useDispatch();
 	const [goal, setGoal] = useState("Pounds Lost Goal");
 	const [medicalCondition, setMedicalCondition] = useState("no");
 	const [additionalInput, setAdditionalInput] = useState("");
 	const [markDown, setMarkDown] = useState<string | null>("");
-	const [loading, setLoading] = useState(false);
 
-	const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
+	const onSubmit = async () => {
 		const isAdditionInput =
 			additionalInput.length > 0
 				? `Please also take in consideration of these additional instruction ${additionalInput}`
@@ -27,7 +31,7 @@ const Work = () => {
 
 	const getWorkoutPlan = async (workoutInstructions: string) => {
 		try {
-			setLoading(true);
+			dispatch(setLoading(true));
 			const apiKey = process.env.OPENAI_API_KEY;
 			const openai = new OpenAI({
 				apiKey,
@@ -43,9 +47,10 @@ const Work = () => {
 				model: "gpt-3.5-turbo",
 			});
 			setMarkDown(chatCompletion.choices[0].message.content);
-			setLoading(false);
+			dispatch(setMarkDownData(chatCompletion.choices[0].message.content ?? ''));
+			dispatch(setLoading(false));
 		} catch (error) {
-			setLoading(false);
+			dispatch(setLoading(false));
 			console.log("error", error);
 		}
 	};
@@ -76,12 +81,7 @@ const Work = () => {
 							&nbsp; tips.
 						</p>
 					</div>
-					<form
-						onSubmit={(e: FormEvent<HTMLFormElement>) =>
-							onSubmit(e)
-						}
-						style={{ padding: "26px" }}
-					>
+					<div style={{ padding: "26px" }}>
 						<select
 							required
 							onChange={(e: ChangeEvent<HTMLSelectElement>) =>
@@ -176,23 +176,28 @@ const Work = () => {
 							className='block p-2.5 w-full text-sm mb-6 text-gray-900 bg-gray-50 rounded-lg border border-primary focus:ring-primary focus:border-primary dark:bg-gray-700 dark:border-primary dark:placeholder-gray-400 dark:text-black dark:focus:ring-primary dark:focus:border-primary'
 							placeholder='add additional instructions...'
 						></textarea>
-						<button className='flex border w-full md:w-auto md:mt-0 border-primary justify-center rounded-full text-xl font-medium items-center py-3 px-7 text-primary hover:text-white hover:bg-primary'>
-							Get Workout Plan
+						<button 
+							className='flex border w-full md:w-auto md:mt-0 border-primary justify-center rounded-full text-xl font-medium items-center py-3 px-7 text-primary hover:text-white hover:bg-primary'
+							onClick={onSubmit}
+						>
+							<a href="#loaderId">Get Workout Plan</a>
 						</button>
-					</form>
+					</div>
 				</div>
 			</Fade>
-			{loading ? (
-				<Loader />
-			) : (
-				<div className='bg-gray p-24'>
-					<Markdown
-						remarkPlugins={[remarkGfm]}
-					>{`${markDown}`}</Markdown>
-				</div>
-			)}
+			<div id="loaderId">
+				{loading ? (
+						<Loader />
+				) : (
+					<div className='bg-gray p-24'>
+						<Markdown
+							remarkPlugins={[remarkGfm]}
+						>{`${markDown}`}</Markdown>
+					</div>
+				)}
+			</div>
 		</div>
 	);
 };
 
-export default Work;
+export default WorkOut;
