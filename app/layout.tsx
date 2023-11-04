@@ -1,8 +1,7 @@
-import './globals.css';
 import Navbar from './components/Navbar/index';
 import Footer from './components/Footer/Footer';
 import { Providers } from './store/provider';
-import store from './store';
+import './globals.css';
 
 
 export const metadata = {

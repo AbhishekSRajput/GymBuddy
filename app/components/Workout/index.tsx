@@ -91,7 +91,7 @@ const WorkOut = () => {
 							id='countries'
 							className='bg-gray-50 mb-5 border border-primary text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-3 dark:bg-gray-700 dark:border-primary dark:placeholder-gray-400 dark:text-black dark:focus:ring-primary dark:focus:border-primary'
 						>
-							<option selected value='Weight loss Goal'>
+							<option defaultValue='Weight loss Goal'>
 								Pounds Lost Goal
 							</option>
 							<option value='Body Fat Percentage Goal'>
@@ -129,7 +129,7 @@ const WorkOut = () => {
 							}
 							className='bg-gray-50 mb-5 border border-primary text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-3 dark:bg-gray-700 dark:border-primary dark:placeholder-gray-400 dark:text-black dark:focus:ring-primary dark:focus:border-primary'
 						>
-							<option selected value='No'>
+							<option defaultValue='No'>
 								Do You Have Any Health Conditions?
 							</option>
 							<option value='No'>No</option>
